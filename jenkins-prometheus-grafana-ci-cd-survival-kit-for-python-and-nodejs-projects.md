@@ -1,6 +1,6 @@
 # Jenkins-Prometheus-Grafana CI/CD Survival Kit For Python And NodeJs Projects.
 
-This project is a survival kit for implementing Ci/CD pipelines on Python and NodeJs project. It is **meticulously** packed with all the commands, and progressive steps required to fully implement robust CI/CD pipelines for the stated project stacks/types.
+This project is a survival kit for implementing CI/CD pipelines on Python and NodeJs project. It is **meticulously** packed with all the commands, and progressive steps required to fully implement robust CI/CD pipelines for the stated project stacks/types.
 
 **IMPORTANT.**
 
