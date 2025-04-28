@@ -2,9 +2,9 @@
 
 This repository is a survival kit for implementing Ci/CD pipelines on Python and NodeJs project  - with Prometheus and Grafana for Jenkins logging and monitoring. It is **meticulously** packed with all the commands, and progressive steps required to fully implement robust CI/CD pipelines for the stated project stacks/types.
 
-> P.S: Life is already hard, tedious, and tasking enough as a startup CTO(who tirelessly leads work across the whole product development lifecycle - from ideation and design till deployments and DevOps), what's the point of stressing further. I did this - mainly to streamline and ease the repetitive task of creating multiple CI/CD pipelines on different project. **Feel free to bet your life on it.**
+> P.S: Life is already hard, tedious, and tasking enough as a startup CTO(who tirelessly leads work across the whole product development lifecycle - from ideation and design till deployments and DevOps), what's the point of stressing further. I did this - mainly to streamline and ease the repetitive task of creating multiple CI/CD pipelines on different project. **I gave special attention into making this as convenient(and robust) as possible for myself. Feel free to bet your life on it.**
 
-> Do well to drop a star, fork, and contribute, to make the sheet more robust for everyone who will find it helpful.
+> Do well to drop a star, fork to own a copy, and contribute, to make the sheet more robust for everyone who will find it helpful.
 
 ## How You Can Contribute.
 
@@ -33,20 +33,19 @@ _Workflow Diagram._
 
 ---
 
-> 1. **The cloud service provider used, is Amazon Web Services(AWS) - with EC2 for Virtual Machines(VMs)**
->
-> 2. **Each of the two(2) workflows will have two different implementations for:**
->
-> - **A Jenkins freestyle job**
-> - **A Jenkins Pipeline job - using a Jenkins file**
-
 **IMPORTANT.**
+
+1. The cloud service provider used, is Amazon Web Services(AWS) - with EC2 for Virtual Machines(VMs)
+2. Each of the two(2) workflows will have two different implementations for:
+    - A Jenkins freestyle job
+    - A Jenkins Pipeline job - using a Jenkins file
 
 This project assumes that you already know some solid amount of cloud and DevOps implementations.
 
 It requires that you:
 
 1. Have solid knowledge of some cloud and DevOps implementations.
+
 2. Already know how to deploy a server(NodeJs or Python) on an AWS EC2 instance - using systemd for service management and persistence.
 
 ## Before You Contribute.
