@@ -4,7 +4,7 @@ This project is a survival kit for implementing Ci/CD pipelines on Python and No
 
 **IMPORTANT.**
 
-This project assumes that you already know a good amount of cloud and DevOps knowledge.
+This project assumes that you already have a good amount of cloud and DevOps knowledge.
 
 It requires that you:
 
@@ -30,15 +30,17 @@ It requires that you:
 
   - Pipeline Implementation(For Both A NodeJs And Python Project Respectively).
 
+- Part 5: Setting Up Prometheus And Grafana.
+
 ## Part 1: Installing Jenkins On An AWS EC2 Instance.
 
 This step will guide through the process of installing a new Jenkins server on an AWS EC2 virtual machine.
 
 **P.S:**
 
-1. **It is assumed that you already have an AWS EC2 instance created - which is also already running the Python/NodeJs project server. Both the project server, and the Jenkins server will run on the same EC2 instance.**
+1. It is assumed that you already have an AWS EC2 instance created - which is also already running the Python/NodeJs project server. Both the project server, and the Jenkins server will run on the same EC2 instance.
 
-1. **Ensure to keep the VM port 8080 open. Jenkins runs by default on port 8080. Keeping everything behind a reverse proxy, will also be very beneficial**
+1. Ensure to keep the VM port 8080 open. Jenkins runs by default on port 8080. Keeping everything behind a reverse proxy, will also be very beneficial
 
 ### 1.1. Update the system.
 
@@ -207,77 +209,77 @@ _Workflow diagram needed._
 
 **NodeJs**
 
-1. Ensure all necessary plug-ins(Git and NodeJs) are Installed.
+  1. Ensure all necessary plug-ins(Git and NodeJs) are Installed.
 
-_Screenshot needed._
+  _Screenshot needed._
 
-> While I'm not very sure, I believe that all the required Git plug-ins are installed at the start when you agreed to install **suggested plugins**. But still do well, to check for any Git and NodeJs plug-in you feel will be required, and install such.
+  > While I'm not very sure, I believe that all the required Git plug-ins are installed at the start when you agreed to install **suggested plugins**. But still do well, to check for any Git and NodeJs plug-in you feel will be required, and install such.
 
-2. Create a New Freestyle Job.
+  2. Create a New Freestyle Job.
 
-- Name: `your-project-job-name`
+  - Name: `your-project-job-name`
 
-- Type: select `Freestyle project`
+  - Type: select `Freestyle project`
 
-- Ensure to check Github project, then add the github repo URl - but in SSH format.
-
-_Screenshot needed - for the aspects covered so far._
-
-> IMPORTANT: While adding your Github URL during the jenkins job/project creation, ensure to use SSH format. E.g:
->
-> **`git@github.com:your-username/repo-name.git`** or **`git@github.com:your-github-org-name/repo-name.git`**. If you use the 'https' format(e.g: `https://github.com/your-github-org-name/repo-name`), your job will get stuck during https authentication step, as the Jenkins job, will request for authentication during the shell process.
-
-- Source Code Management.
-
-  - Select **Git**
-
-  - Repository URL: `git@github.com:your-username/your-repo.git` - **ensure to keep in SSH format**.
-
-  - Credentials(for private or organizational repos): For private or org-based repos:
-
-    - ensure that your Github org permits the use of personal access tokens for verifying third party processes, then create a new personal access token.
-
-    - select username and password.
-
-    - add your github username as the username
-
-    - add the personal access token as the password.
-
-  - Branch: `*/main` or `*/master` - or the branch you want the job to affect.
+  - Ensure to check Github project, then add the github repo URl - but in SSH format.
 
   _Screenshot needed - for the aspects covered so far._
 
-- Build triggers.
+  > IMPORTANT: While adding your Github URL during the jenkins job/project creation, ensure to use SSH format. E.g:
+  >
+  > **`git@github.com:your-username/repo-name.git`** or **`git@github.com:your-github-org-name/repo-name.git`**. If you use the 'https' format(e.g: `https://github.com/your-github-org-name/repo-name`), your job will get stuck during https authentication step, as the Jenkins job, will request for authentication during the shell process.
 
-For the job build triggers, there are 2 main options that we can conveniently use.
+  - Source Code Management.
 
-I. Poll SCM: this creates(more like) a cron job, and polls to Github at whichever interval you set. If change is detected on the repo, the Jenkins job workflow it automatically triggered.
+    - Select **Git**
 
-**Setting your polling schedule**.
+    - Repository URL: `git@github.com:your-username/your-repo.git` - **ensure to keep in SSH format**.
 
-- **`*/5 * * * *`**: this option polls every 5 minutes, but this may result in simultaneous polling across multiple jobs.
+    - Credentials(for private or organizational repos): For private or org-based repos:
 
-- **`H/5 * * * *`**: Polls every 5 minutes but spreads the load evenly by assigning a random minute within the 5-minute window for each job, reducing the chance of overlapping polling times.
+      - ensure that your Github org permits the use of personal access tokens for verifying third party processes, then create a new personal access token.
 
-This technique improves efficiency, especially when you have many Jenkins jobs with SCM polling, by minimizing the chance of simultaneous polling spikes and improving overall performance.
+      - select username and password.
 
-_Screenshot needed - for the aspects covered so far._
+      - add your github username as the username
 
-II. GitHub hook trigger for GITScm polling.
+      - add the personal access token as the password.
 
-This option(which is the one we'll be using), will require us to set up a webhook on Github. The webhook, will automatically send a message to Jenkins when ever a push is initiated to our repo. This will in-turn trigger Jenkins to automatically initiate the workflow process.
+    - Branch: `*/main` or `*/master` - or the branch you want the job to affect.
 
-**Configure Webhook in GitHub**
+    _Screenshot needed - for the aspects covered so far._
 
-- Go to your GitHub repo → **Settings → Webhooks**
-- Add new webhook:
+  - Build triggers.
 
-  - Payload URL: `http://<EC2-Public-IP>:8080/github-webhook/
-E.g: `http://56.23.6.139:8080/github-webhook/`
+  For the job build triggers, there are 2 main options that we can conveniently use.
 
-  - Content type: `application/json`
-  - Secret: leave blank
-  - SSL verification: enable if your jenkins setup is configured on a standard domain/sub-domain, else disable.
-  - Which events would you like to trigger this webhook?: select `Just the push event`.
-  - Ensure to check `Active`.
-  - Save/Add webhook.
+  I. Poll SCM: this creates(more like) a cron job, and polls to Github at whichever interval you set. If change is detected on the repo, the Jenkins job workflow it automatically triggered.
+
+  **Setting your polling schedule**.
+
+  - **`*/5 * * * *`**: this option polls every 5 minutes, but this may result in simultaneous polling across multiple jobs.
+
+  - **`H/5 * * * *`**: Polls every 5 minutes but spreads the load evenly by assigning a random minute within the 5-minute window for each job, reducing the chance of overlapping polling times.
+
+  This technique improves efficiency, especially when you have many Jenkins jobs with SCM polling, by minimizing the chance of simultaneous polling spikes and improving overall performance.
+
+  _Screenshot needed - for the aspects covered so far._
+
+  II. GitHub hook trigger for GITScm polling.
+
+  This option(which is the one we'll be using), will require us to set up a webhook on Github. The webhook, will automatically send a message to Jenkins when ever a push is initiated to our repo. This will in-turn trigger Jenkins to automatically initiate the workflow process.
+
+  **Configure Webhook in GitHub**
+
+  - Go to your GitHub repo → **Settings → Webhooks**
+  - Add new webhook:
+
+    - Payload URL: `http://<EC2-Public-IP>:8080/github-webhook/
+  E.g: `http://56.23.6.139:8080/github-webhook/`
+
+    - Content type: `application/json`
+    - Secret: leave blank
+    - SSL verification: enable if your jenkins setup is configured on a standard domain/sub-domain, else disable.
+    - Which events would you like to trigger this webhook?: select `Just the push event`.
+    - Ensure to check `Active`.
+    - Save/Add webhook.

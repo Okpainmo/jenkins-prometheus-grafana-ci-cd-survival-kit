@@ -17,7 +17,7 @@ Just below are some ways you can contribute.
 
 ## CI/CD Workflows.
 
-This sheet contains two different CI/CD workflow implementations.
+This project contains two different CI/CD workflow implementations.
 
 1. A single virtual machine(VM) CI/CD workflow for small scale/startup projects.
 
