@@ -52,7 +52,7 @@ sudo apt update && sudo apt upgrade -y
 
 _Screenshot needed._
 
-### 1.2. Install Jenkins.
+### 1.2. Install Java.
 
 **Install Java Version 21(a Jenkins requirement) - Ensure to only install version 21 or higher. As at 24/04/2025, version 11 would not work with Jenkins. It has also been announced that Jenkins is already coming to an end of support for version 17.**
 
@@ -64,7 +64,7 @@ java -version # verify the installation
 
 _Screenshot needed._
 
-### 1.3 Add Jenkins repo and install
+### 1.3 Add Jenkins repo and install(proper)
 
  <!-- https://www.jenkins.io/doc/book/installing/linux/#debianubuntu -->
 
@@ -114,7 +114,7 @@ Here, "8081" was chosen but you can put another port available.
 
 _Screenshot needed - show the above(port change) section as shown on this page - https://www.jenkins.io/doc/book/installing/linux/#debianubuntu_
 
-### 1.6 Access Jenkins UI and perform necessary setups.
+### 1.7 Access Jenkins UI and perform necessary setups.
 
 - Go to `http://<your-EC2-Public-IP>:8080`
 
@@ -207,7 +207,7 @@ _Workflow diagram needed._
 
 > For better understanding of the CI/CD workflow, kindly study the workflow diagram above.
 
-### 3.1 Freestyle Implementation(For Both A NodeJs And Python Project Respectively).
+### 3.1 Freestyle Implementation and Pipeline Implementation(For NodeJs Project).
 
 **NodeJs(Freestyle Job)**
 
@@ -457,7 +457,7 @@ _Workflow diagram needed._
 
 **NodeJs(Pipeline Job - with Jenkins File)**
 
-## 🔄 Optional Improvements
+## Part 6: Optional Improvements
 
 - Add credentials via Jenkins for secure deployment
 - Archive artifacts or reports
