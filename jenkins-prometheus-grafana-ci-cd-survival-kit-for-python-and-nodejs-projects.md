@@ -20,17 +20,19 @@ It requires that you:
 
 - Part 3: Implementing Single VM CI/CD Workflows
 
-  - Freestyle Implementation(For Both A NodeJs And Python Project Respectively).
+  - Freestyle Implementation and Pipeline Implementation(For NodeJs Project).
 
-  - Pipeline Implementation(For Both A NodeJs And Python Project Respectively).
+  - Freestyle Implementation and Pipeline Implementation(For Python Project).
 
 - Part 4: Implementing Robust CI/CD Workflows With Docker As Agent.
 
-  - Freestyle Implementation(For Both A NodeJs And Python Project Respectively).
+  - Freestyle Implementation and Pipeline Implementation(For NodeJs Project).
 
-  - Pipeline Implementation(For Both A NodeJs And Python Project Respectively).
+  - Freestyle Implementation and Pipeline Implementation(For Python Project).
 
 - Part 5: Setting Up Prometheus And Grafana.
+
+- Part 6: Optional Improvements(That You Can Contribute).
 
 ## Part 1: Installing Jenkins On An AWS EC2 Instance.
 
@@ -203,11 +205,11 @@ _Workflow diagram needed._
 
 > Similarly as required, the server(NodeJs or Python) should already be deployed on the AWS EC2 instance - using systemd for service management and persistence.
 
-> For better understanding of the Ci/CD workflow, kindly study the workflow diagram above.
+> For better understanding of the CI/CD workflow, kindly study the workflow diagram above.
 
 ### 3.1 Freestyle Implementation(For Both A NodeJs And Python Project Respectively).
 
-**NodeJs**
+**NodeJs(Freestyle Job)**
 
   1. Ensure all necessary plug-ins(Git, Docker, and NodeJs) are Installed.
 
@@ -292,7 +294,7 @@ _Workflow diagram needed._
       - Ensure to check `Active`.
       - Save/Add webhook.
 
-    **Select the branch to built**
+    **Select the branch to build**
 
     Set the appropriate branch 
 
@@ -388,68 +390,78 @@ _Workflow diagram needed._
       echo "[my-nodejs-freestyle-CI-CD-job] ✅ Deployment and service restart complete!"
     ```
 
-  - Click 'Apply', then 'Save'.
+    - Click 'Apply', then 'Save'.
 
-  _Screenshot needed._
+    _Screenshot needed._
 
-3. Giving the Jenkins user the necessary permissions to run the necessary processes(i.e. the file syncing process, the server-restart, and the server-status-check) on the CI/CD workflow.
+  3. Giving the Jenkins user the necessary permissions to run the necessary processes(i.e. the file syncing process, the server-restart, and the server-status-check) on the CI/CD workflow.
 
-Normally, the Jenkins user will not have direct access rights to run system services, so we'll need to update permissions on the host VM to permit the Jenkins to run the necessary system services.
+  Normally, the Jenkins user will not have direct access rights to run system services, so we'll need to update permissions on the host VM to permit the Jenkins to run the necessary system services.
 
-  - Switch to the Ubuntu user and run the below command.
+    - Switch to the Ubuntu user and run the below command.
+
+      ```bash
+        sudo visudo -f /etc/sudoers.d/jenkins  
+      ```
+      the command will open nano CLI editor. Add the following to the opened file.
+
+      ```bash
+        jenkins ALL=(ALL) NOPASSWD: /usr/bin/rsync, /bin/systemctl restart your-nodejs-server-service.service, /bin/systemctl status your-nodejs-server-service.service
+      ```
+
+      **Breaking down the above script**
+
+        | Part | Meaning |
+        |------|--------|
+        | `jenkins` | The Linux username (the Jenkins service typically runs as this user). |
+        | `ALL=(ALL)` | This means the `jenkins` user can run the specified commands as **any user** on **any host** (standard sudo syntax). |
+        | `NOPASSWD:` | Jenkins **won’t be asked for a password** when executing the commands listed after this. |
+        | `/usr/bin/rsync` | Allows Jenkins to run the `rsync` command — typically used for syncing files from the Jenkins workspace to your Node.js app directory. |
+        | `/bin/systemctl restart Zed-Labs-Platform-Server_PlatformCore01.service` | Allows Jenkins to restart your Node.js service (used for deploying updated code). |
+        | `/bin/systemctl status Zed-Labs-Platform-Server_PlatformCore01.service` | Allows Jenkins to check the service status for health monitoring/logging. |
+
+      **Nano Tips**
+      
+        - 1. press 'CTRL + o' - save the update
+        - 2. press 'ENTER' - accept the file name prompt
+        - 3. press 'CTRL + X' to exit Nano
+
+  **In case the Jenkins user is not having access to the original nodeJs project directory, try the following**.
+
+    a. **Add Jenkins to the `ubuntu` group:**
 
     ```bash
-      sudo visudo -f /etc/sudoers.d/jenkins  
+    sudo usermod -aG ubuntu jenkins
     ```
-    the command will open nano CLI editor. Add the following to the opened file.
+
+    b. **Set group permissions on the folder:**
 
     ```bash
-      jenkins ALL=(ALL) NOPASSWD: /usr/bin/rsync, /bin/systemctl restart your-nodejs-server-service.service, /bin/systemctl status your-nodejs-server-service.service
+    sudo chown -R ubuntu:ubuntu /home/ubuntu/your-nodes-project-directory
+    sudo chmod -R 775 /home/ubuntu/your-nodes-project-directory
     ```
 
-    **Breaking down the above script**
+    c. **Reload Jenkins or re-login Jenkins session:**
 
-      | Part | Meaning |
-      |------|--------|
-      | `jenkins` | The Linux username (the Jenkins service typically runs as this user). |
-      | `ALL=(ALL)` | This means the `jenkins` user can run the specified commands as **any user** on **any host** (standard sudo syntax). |
-      | `NOPASSWD:` | Jenkins **won’t be asked for a password** when executing the commands listed after this. |
-      | `/usr/bin/rsync` | Allows Jenkins to run the `rsync` command — typically used for syncing files from the Jenkins workspace to your Node.js app directory. |
-      | `/bin/systemctl restart Zed-Labs-Platform-Server_PlatformCore01.service` | Allows Jenkins to restart your Node.js service (used for deploying updated code). |
-      | `/bin/systemctl status Zed-Labs-Platform-Server_PlatformCore01.service` | Allows Jenkins to check the service status for health monitoring/logging. |
+    ```bash
+    sudo systemctl restart jenkins
+    ```
 
-    **Nano Tips**
-    
-      - 1. press 'CTRL + o' - save the update
-      - 2. press 'ENTER' - accept the file name prompt
-      - 3. press 'CTRL + X' to exit Nano
+    This way:
 
-**In case the Jenkins user is not having access to the original nodeJs project directory, try the following**.
+    ✅ Jenkins can access the folder  
+    ✅ Ubuntu retains ownership  
+    ✅ More secure for shared environments
 
-  a. **Add Jenkins to the `ubuntu` group:**
+  4. Set Up Task Done: Now try building the CI/CD job.
 
-  ```bash
-  sudo usermod -aG ubuntu jenkins
-  ```
+**NodeJs(Pipeline Job - with Jenkins File)**
 
-  b. **Set group permissions on the folder:**
+## 🔄 Optional Improvements
 
-  ```bash
-  sudo chown -R ubuntu:ubuntu /home/ubuntu/your-nodes-project-directory
-  sudo chmod -R 775 /home/ubuntu/your-nodes-project-directory
-  ```
+- Add credentials via Jenkins for secure deployment
+- Archive artifacts or reports
+- Add environment-specific steps (test/staging/prod)
+- Integrate Slack/Discord for notifications
 
-  c. **Reload Jenkins or re-login Jenkins session:**
-
-  ```bash
-  sudo systemctl restart jenkins
-  ```
-
-  This way:
-
-  ✅ Jenkins can access the folder  
-  ✅ Ubuntu retains ownership  
-  ✅ More secure for shared environments
-
-4. Set Up Task Done: Now try building the CI/CD job.
 
