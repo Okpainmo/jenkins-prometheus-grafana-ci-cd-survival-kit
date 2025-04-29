@@ -11,7 +11,7 @@ This repository is a survival kit for implementing CI/CD pipelines on Python and
 Just below are some ways you can contribute.
 
 1. Add relevant screenshot that describe each step that a command or process is implementing.
-2. Update step explanations - to providing better comprehension for others.
+2. Update step explanations - to provide better comprehension for others.
 3. Add new(**different**) Jenkins CI/CD workflows to make the sheet more robust and super-helpful.
 4. ...
 
@@ -21,15 +21,15 @@ This project contains two different CI/CD workflow implementations.
 
 1. A single virtual machine(VM) CI/CD workflow for small scale/startup projects.
 
-_Workflow Diagram._
+    _Workflow Diagram._
 
-> will add diagram here
+    > will add diagram here
 
 2. A more robust CI/CD workflow with Docker as agent - which supports multiple VMs and/or deployments.
 
-_Workflow Diagram._
+    _Workflow Diagram._
 
-> will add diagram here
+    > will add diagram here
 
 ---
 
@@ -44,13 +44,13 @@ This project assumes that you already know some solid amount of cloud and DevOps
 
 It requires that you:
 
-1. Have solid knowledge of some cloud and DevOps implementations.
+1. Have solid knowledge of some cloud and DevOps concepts and processes.
 
-2. Already know how to deploy a server(NodeJs or Python) on an AWS EC2 instance - using systemd for service management and persistence.
+2. Already know how to deploy a server(NodeJs or Python) on an AWS EC2 instance - using systemd for server management and persistence.
 
 ## Before You Contribute.
 
-> This project will be a progressive one. I and any other contributors, will keep contributing relevant updates and information. This makes is very important for you to always share details about any contribution you wish to make before-hand, and avoid the needless stress of proceeding to make a contribution on a topic that is already on the way.
+> This project will be a progressive one. I and any other contributors, will keep contributing relevant updates and information. This makes it very important that you always share details about any contribution you wish to make-  before-hand, and avoid the needless stress of proceeding to make a contribution on a topic that is already on the way.
 
 To contribute successfully, simply create a Github issues that mentions me, and I'll be right with you to discuss your
 proposed/intended contribution.
