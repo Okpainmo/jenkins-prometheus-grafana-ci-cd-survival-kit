@@ -1,8 +1,8 @@
 # Jenkins-Prometheus-Grafana CI/CD Survival Kit For Python And NodeJs Projects.
 
-This repository is a survival kit for implementing CI/CD pipelines on Python and NodeJs project with Jenkins. Plus Prometheus and Grafana for Jenkins logging and monitoring. It is **meticulously** packed with all the commands, and progressive steps required to fully implement robust CI/CD pipelines for the stated project stacks/types.
+> Life is already hard, tedious, and tasking enough as a startup CTO(who tirelessly leads work across the whole product development lifecycle - from ideation and design till deployments and DevOps), what's the point of stressing further. I did this - mainly to streamline and ease the repetitive task of creating multiple CI/CD pipelines on different project. **I gave special attention into making this as convenient(and robust) as possible for myself. Feel free to bet your life on it.**
 
-> P.S: Life is already hard, tedious, and tasking enough as a startup CTO(who tirelessly leads work across the whole product development lifecycle - from ideation and design till deployments and DevOps), what's the point of stressing further. I did this - mainly to streamline and ease the repetitive task of creating multiple CI/CD pipelines on different project. **I gave special attention into making this as convenient(and robust) as possible for myself. Feel free to bet your life on it.**
+This repository is a survival kit for implementing CI/CD pipelines on Python and NodeJs project with Jenkins. Plus Prometheus and Grafana for Jenkins logging and monitoring. It is **meticulously** packed with all the commands, and progressive steps required to fully implement robust CI/CD pipelines for the stated project stacks/types.
 
 > Do well to drop a star, fork to own a copy, and contribute, to make the sheet more robust for everyone who will find it helpful.
 
@@ -11,8 +11,11 @@ This repository is a survival kit for implementing CI/CD pipelines on Python and
 Just below are some ways you can contribute.
 
 1. Add relevant screenshot that describe each step that a command or process is implementing.
+
 2. Update step explanations - to provide better comprehension for others.
+
 3. Add new(**different**) Jenkins CI/CD workflows to make the sheet more robust and super-helpful.
+
 4. ...
 
 ## CI/CD Workflows.
@@ -36,6 +39,7 @@ This project contains two different CI/CD workflow implementations.
 **IMPORTANT.**
 
 1. The cloud service provider used, is Amazon Web Services(AWS) - with EC2 for Virtual Machines(VMs)
+
 2. Each of the two(2) workflows will have two different implementations for:
     - A Jenkins freestyle job
     - A Jenkins Pipeline job - using a Jenkins file
@@ -52,8 +56,7 @@ It requires that you:
 
 > This project will be a progressive one. I and any other contributors, will keep contributing relevant updates and information. This makes it very important that you always share details about any contribution you wish to make-  before-hand, and avoid the needless stress of proceeding to make a contribution on a topic that is already on the way.
 
-To contribute successfully, simply create a Github issues that mentions me, and I'll be right with you to discuss your
-proposed/intended contribution.
+To contribute successfully, simply create a Github issues that mentions me, and I'll be right with you to discuss your proposed/intended contribution.
 
 > Just in case this repository ever gets to save your butt at work or while learning Jenkins, and you wish to send an appreciation, [feel free to buy me a 'coffee'](https://paystack.com/pay/cagnddqmr2).
 
