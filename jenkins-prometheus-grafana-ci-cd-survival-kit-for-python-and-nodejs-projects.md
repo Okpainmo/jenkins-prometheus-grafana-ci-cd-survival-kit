@@ -142,7 +142,7 @@ _Screenshot needed._
 
 ## Part 2: Setting Up, And Connecting Jenkins With Github(Configuring Github Access).
 
-From this point on, ensure to switch to the Jenkins user(on the EC2 VM).
+All through this part(part 2), ensure to switch to the Jenkins user(on the EC2 VM).
 
 ```bash
 sudo su - jenkins
@@ -155,13 +155,20 @@ _Screenshot needed._
 Ensure to copy and save both the public and private key.
 
 ```bash
-ssh-keygen -t rsa -b 4096 -C "jenkins@ci" -f ~/.ssh/id_rsa # creates the keys
+ssh-keygen -t rsa -b 4096 -C "jenkins@ci" -f ~/.ssh/id_rsa # creates the keys, abd reveals the private key - copy and save it.
 ```
 
 _Screenshot needed._
 
 ```bash
-cat ~/.ssh/id_rsa.pub # reveals the public key
+cat ~/.ssh/id_rsa # reveals the private key - never reveal or share this - no need to copy it. You can always view it with this command.
+```
+
+_Screenshot needed._
+
+
+```bash
+cat ~/.ssh/id_rsa.pub # reveals the public key - copy and save it.
 ```
 
 _Screenshot needed._
@@ -207,255 +214,257 @@ _Workflow diagram needed._
 
 > For better understanding of the CI/CD workflow, kindly study the workflow diagram above.
 
-### 3.1 Freestyle Implementation and Pipeline Implementation(For NodeJs Project).
+### 3.1. Freestyle Implementation and Pipeline Implementation(For NodeJs Project).
 
-**NodeJs(Freestyle Job)**
+#### 3.1.1 NodeJs(Freestyle Job)
 
-  1. Ensure all necessary plug-ins(Git, Docker, and NodeJs) are Installed.
+##### 3.1.1.1 Ensure all necessary plug-ins(Git, Docker, and NodeJs) are Installed.
 
-  _Screenshot needed._
+_Screenshot needed._
 
-  > While I'm not very sure, I believe that all the required Git plug-ins are installed at the start when you agreed to install **suggested plugins**. But still do well, to check for any Git, Docker, and NodeJs plug-in you feel will be required, and install such.
+> While I'm not very sure, I believe that all the required Git plug-ins are installed at the start when you agreed to install **suggested plugins**. But still do well, to check for any Git, Docker, and NodeJs plug-in you feel will be required, and install such.
 
-  2. Create a New Freestyle Job.
+##### 3.1.1.2. Create a New Freestyle Job.
 
-  - Name: `your-project-job-name`
+- Name: `your-project-job-name`
 
-  - Type: select `Freestyle project`
+- Type: select `Freestyle project`
 
-  - Ensure to check Github project, then add the github repo URl - but in SSH format.
+- Ensure to check Github project, then add the github repo URl - but in SSH format.
+
+_Screenshot needed - for the aspects covered so far._
+
+> IMPORTANT: While adding your Github URL during the jenkins job/project creation, ensure to use SSH format. E.g:
+>
+> **`git@github.com:your-username/repo-name.git`** or **`git@github.com:your-github-org-name/repo-name.git`**. If you use the 'https' format(e.g: `https://github.com/your-github-org-name/repo-name`), your job will get stuck during https authentication step, as the Jenkins job, will request for authentication during the shell process.
+
+- Source Code Management.
+
+  - Select **Git**
+
+  - Repository URL: `git@github.com:your-username/your-repo.git` - **ensure to keep in SSH format**.
+
+  - Credentials(for private or organizational repos): For private or org-based repos:
+
+    - If using an org repo, ensure that your Github org permits the use of personal access tokens for verifying external/third party processes.
+
+    _Screenshot needed - show on Github - the area to allow the above stated access right._
+    
+    - create a new personal access token.
+
+    - now back to jenkins, select username and password as authentication option.
+
+    - add your github username as the username
+
+    - add the new personal access token(the one you just created) as the password.
+
+  - Branch: `*/main` or `*/master` - or the branch you want the job to affect.
 
   _Screenshot needed - for the aspects covered so far._
 
-  > IMPORTANT: While adding your Github URL during the jenkins job/project creation, ensure to use SSH format. E.g:
-  >
-  > **`git@github.com:your-username/repo-name.git`** or **`git@github.com:your-github-org-name/repo-name.git`**. If you use the 'https' format(e.g: `https://github.com/your-github-org-name/repo-name`), your job will get stuck during https authentication step, as the Jenkins job, will request for authentication during the shell process.
+- Build triggers.
 
-  - Source Code Management.
+  For the job build triggers, there are 2 main options that we can conveniently use.
 
-    - Select **Git**
+  I. Poll SCM: this creates(more like) a cron job, and polls to Github at whichever interval you set. If change is detected on the repo, the Jenkins job workflow it automatically triggered.
 
-    - Repository URL: `git@github.com:your-username/your-repo.git` - **ensure to keep in SSH format**.
+  **Setting your polling schedule**.
 
-    - Credentials(for private or organizational repos): For private or org-based repos:
+  - **`*/5 * * * *`**: this option polls every 5 minutes, but this may result in simultaneous polling across multiple jobs.
 
-      - If using an org repo, ensure that your Github org permits the use of personal access tokens for verifying external/third party processes.
+  - **`H/5 * * * *`**: Polls every 5 minutes but spreads the load evenly by assigning a random minute within the 5-minute window for each job, reducing the chance of overlapping polling times.
 
-      _Screenshot needed - show on Github - the area to allow the above stated access right._
-      
-      - create a new personal access token.
+  This technique improves efficiency, especially when you have many Jenkins jobs with SCM polling, by minimizing the chance of simultaneous polling spikes and improving overall performance.
 
-      - now back to jenkins, select username and password as authentication option.
+  _Screenshot needed - for the aspects covered so far._
 
-      - add your github username as the username
+  II. GitHub hook trigger for GITScm polling.
 
-      - add the new personal access token(the one you just created) as the password.
+  This option(which is the one we'll be using), will require us to set up a webhook on Github. The webhook, will automatically send a message to Jenkins when ever a push is initiated to our repo. This will in-turn trigger Jenkins to automatically initiate the workflow process.
 
-    - Branch: `*/main` or `*/master` - or the branch you want the job to affect.
+  _Screenshot needed - show(point to) webhook link._
+  
+  _Screenshot needed - show webhook creation area._
 
-    _Screenshot needed - for the aspects covered so far._
+  **Configure Webhook in GitHub**
 
-  - Build triggers.
+  - Go to your GitHub repo → **Settings → Webhooks**
+  - Add new webhook:
 
-    For the job build triggers, there are 2 main options that we can conveniently use.
+    - Payload URL: `http://<EC2-Public-IP>:8080/github-webhook/
+  E.g: `http://56.23.6.139:8080/github-webhook/`
 
-    I. Poll SCM: this creates(more like) a cron job, and polls to Github at whichever interval you set. If change is detected on the repo, the Jenkins job workflow it automatically triggered.
+    - Content type: `application/json`
+    - Secret: leave blank - or add update as required.
+    - SSL verification: enable if your jenkins setup is configured on a standard domain/sub-domain, else disable.
+    - Which events would you like to trigger this webhook?: select `Just the push event`.
+    - Ensure to check `Active`.
+    - Save/Add webhook.
 
-    **Setting your polling schedule**.
+  **Select the branch to build**
 
-    - **`*/5 * * * *`**: this option polls every 5 minutes, but this may result in simultaneous polling across multiple jobs.
+  Set the appropriate branch 
 
-    - **`H/5 * * * *`**: Polls every 5 minutes but spreads the load evenly by assigning a random minute within the 5-minute window for each job, reducing the chance of overlapping polling times.
+  _Screenshot needed._
 
-    This technique improves efficiency, especially when you have many Jenkins jobs with SCM polling, by minimizing the chance of simultaneous polling spikes and improving overall performance.
+- Environments.
 
-    _Screenshot needed - for the aspects covered so far._
+  For the "Environment" option, ensure to select/check "Delete workspace before build starts". This will ensure that your Jenkins workspace is cleaned before any new workflow process kicks in. This saves from clogs and workspace cluttering.
 
-    II. GitHub hook trigger for GITScm polling.
+  _Screenshot needed._
 
-    This option(which is the one we'll be using), will require us to set up a webhook on Github. The webhook, will automatically send a message to Jenkins when ever a push is initiated to our repo. This will in-turn trigger Jenkins to automatically initiate the workflow process.
+- Build Step.
 
-    _Screenshot needed - show(point to) webhook link._
-    
-    _Screenshot needed - show webhook creation area._
+  Select "Execute shell", and add in the shell script below.
 
-    **Configure Webhook in GitHub**
+  > **P.S: the below shell script is quite detailed, so read-in to learn more about what is does. The workflow diagram for this section/workflow will also offer more insight. Also note that it is not perfect/complete script - as it leaves out very important chores like testing, and others. It is however perfect and suited enough to perform the chores intended to be handled this project - CI/CD. I hope to update and make it more robust subsequently. Kindly contribute if you can.**
 
-    - Go to your GitHub repo → **Settings → Webhooks**
-    - Add new webhook:
+  ```bash
+    echo "[my-nodejs-freestyle-CI-CD-job] 🚀 Starting Jenkins job..."
 
-      - Payload URL: `http://<EC2-Public-IP>:8080/github-webhook/
-    E.g: `http://56.23.6.139:8080/github-webhook/`
+    # access the Jenkins server workspace using $WORKSPACE
+    cd "$WORKSPACE" || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to enter Jenkins workspace."
+        exit 1
+    }
 
-      - Content type: `application/json`
-      - Secret: leave blank - or add update as required.
-      - SSL verification: enable if your jenkins setup is configured on a standard domain/sub-domain, else disable.
-      - Which events would you like to trigger this webhook?: select `Just the push event`.
-      - Ensure to check `Active`.
-      - Save/Add webhook.
+    echo "[my-nodejs-freestyle-CI-CD-job] 🔄 Pulling latest changes from GitHub..."
+    git pull origin main || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ❌ Git pull failed."
+        exit 1
+    }
 
-    **Select the branch to build**
+    echo "[my-nodejs-freestyle-CI-CD-job] 📁 Syncing the pulled/updated project content to live Node.js app folder - excluding unnecessary project files..."
 
-    Set the appropriate branch 
+    LIVE_APP_DIR="/home/ubuntu/your-nodes-project-directory"
 
-    _Screenshot needed._
+    sudo rsync -av --delete \
+      --exclude 'node_modules' \
+      --exclude '.git' \
+      --exclude '.env.local' \
+      "$WORKSPACE/" "$LIVE_APP_DIR/" || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ❌ rsync failed during code sync."
+        exit 1
+    }
 
-  - Environments.
+    echo "[my-nodejs-freestyle-CI-CD-job] ✅ Code sync to $LIVE_APP_DIR completed."
 
-    For the "Environment" option, ensure to select/check "Delete workspace before build starts". This will ensure that your Jenkins workspace is cleaned before any new workflow process kicks in. This saves from clogs and workspace cluttering.
+    # ==============================================================================================
+    # echo "[my-nodejs-freestyle-CI-CD-job] 🔐 Ensuring Jenkins has access to project directory..."
 
-    _Screenshot needed._
+    # Add Jenkins to ubuntu group (only runs if not already a member)
+    # sudo usermod -aG ubuntu jenkins
 
-  - Build Step.
+    # Fix ownership and permissions to allow group access
+    # sudo chown -R ubuntu:ubuntu "$LIVE_APP_DIR"
+    # sudo chmod -R 775 "$LIVE_APP_DIR"
+    # ==============================================================================================
 
-    Select "Execute shell", and add in the shell script below.
+    # The above block is unnecessary - as we will give the Jenkins server all the necessary permissions directly on the host VM.
 
-    > **P.S: the below shell script is quite detailed, so read-in to learn more about what is does. The workflow diagram for this section/workflow will also offer more insight. Also note that it is not perfect/complete script - as it leaves out very important chores like testing. It is however perfect and suited enough to perform the chore intended by this project - CI/CD. I hope to update and make it more robust subsequently. Kindly contribute if you can.**
+    # Load NVM(from the ubuntu user) for the Jenkins user to use Node.js installed via NVM - no need to install node directly on the Jenkins user. This process might be CPU intensive, so feel free to overwrite this step and install nodejs directly on the Jenkins server if you wish.
+    export NVM_DIR="/home/ubuntu/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads NVM
+    nvm use v22.12.0 || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to use Node.js version v22.12.0."
+        exit 1
+    }
 
-    ```bash
-      echo "[my-nodejs-freestyle-CI-CD-job] 🚀 Starting Jenkins job..."
+    # Now proceed to the directory
+    cd "$LIVE_APP_DIR" || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to enter project directory."
+        exit 1
+    }
 
-      # access the Jenkins server workspace using $WORKSPACE
-      cd "$WORKSPACE" || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to enter Jenkins workspace."
-          exit 1
-      }
+    npm install || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ❌ npm install failed."
+        exit 1
+    }
 
-      echo "[my-nodejs-freestyle-CI-CD-job] 🔄 Pulling latest changes from GitHub..."
-      git pull origin main || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ❌ Git pull failed."
-          exit 1
-      }
+    echo "[my-nodejs-freestyle-CI-CD-job] 🔄 Restarting Node.js service..."
+    SERVICE_NAME="your-nodejs-server-service.service"
 
-      echo "[my-nodejs-freestyle-CI-CD-job] 📁 Syncing the pulled/updated project content to live Node.js app folder - excluding unnecessary project files..."
+    sudo systemctl restart "$SERVICE_NAME" || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to restart $SERVICE_NAME"
+        exit 1
+    }
 
-      LIVE_APP_DIR="/home/ubuntu/your-nodes-project-directory"
+    echo "[my-nodejs-freestyle-CI-CD-job] 🩺 Checking service status..."
+    sudo systemctl status "$SERVICE_NAME" --no-pager || {
+        echo "[my-nodejs-freestyle-CI-CD-job] ⚠️ Service restarted but returned a non-zero status."
+    }
 
-      sudo rsync -av --delete \
-        --exclude 'node_modules' \
-        --exclude '.git' \
-        --exclude '.env.local' \
-        "$WORKSPACE/" "$LIVE_APP_DIR/" || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ❌ rsync failed during code sync."
-          exit 1
-      }
+    echo "[my-nodejs-freestyle-CI-CD-job] ✅ Deployment and service restart complete!"
+  ```
 
-      echo "[my-nodejs-freestyle-CI-CD-job] ✅ Code sync to $LIVE_APP_DIR completed."
+  - Click 'Apply', then 'Save'.
 
-      # ==============================================================================================
-      # echo "[my-nodejs-freestyle-CI-CD-job] 🔐 Ensuring Jenkins has access to project directory..."
+  _Screenshot needed._
 
-      # Add Jenkins to ubuntu group (only runs if not already a member)
-      # sudo usermod -aG ubuntu jenkins
+##### 3.1.1.3. Giving the Jenkins user the necessary permissions to run the necessary processes(i.e. the file syncing process, the server-restart, and the server-status-check) on the CI/CD workflow.
 
-      # Fix ownership and permissions to allow group access
-      # sudo chown -R ubuntu:ubuntu "$LIVE_APP_DIR"
-      # sudo chmod -R 775 "$LIVE_APP_DIR"
-      # ==============================================================================================
+1. Giving the Jenkins user permission to run system level services to manage our nodejs application. 
 
-      # The above block is unnecessary - as we will give the Jenkins server all the necessary permissions directly on the host VM.
+Normally, the Jenkins user will not have direct access rights to run system services, so we'll need to update permissions on the host VM to permit the Jenkins to run the necessary system services.
 
-      # Load NVM(from the ubuntu user) for the Jenkins user to use Node.js installed via NVM - no need to install node directly on the Jenkins user. This process might be CPU intensive, so feel free to overwrite this step and install nodejs directly on the Jenkins server if you wish.
-      export NVM_DIR="/home/ubuntu/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads NVM
-      nvm use v22.12.0 || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to use Node.js version v22.12.0."
-          exit 1
-      }
+- Switch to the Ubuntu user and run the below command.
 
-      # Now proceed to the directory
-      cd "$LIVE_APP_DIR" || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to enter project directory."
-          exit 1
-      }
+```bash
+  sudo visudo -f /etc/sudoers.d/jenkins  
+```
+the command will open nano CLI editor. Add the following to the opened file.
 
-      npm install || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ❌ npm install failed."
-          exit 1
-      }
+```bash
+  jenkins ALL=(ALL) NOPASSWD: /usr/bin/rsync, /bin/systemctl restart your-nodejs-server-service.service, /bin/systemctl status your-nodejs-server-service.service
+```
 
-      echo "[my-nodejs-freestyle-CI-CD-job] 🔄 Restarting Node.js service..."
-      SERVICE_NAME="your-nodejs-server-service.service"
+**Breaking down the above script**
 
-      sudo systemctl restart "$SERVICE_NAME" || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ❌ Failed to restart $SERVICE_NAME"
-          exit 1
-      }
+| Part | Meaning |
+|------|--------|
+| `jenkins` | The Linux username (the Jenkins service typically runs as this user). |
+| `ALL=(ALL)` | This means the `jenkins` user can run the specified commands as **any user** on **any host** (standard sudo syntax). |
+| `NOPASSWD:` | Jenkins **won’t be asked for a password** when executing the commands listed after this. |
+| `/usr/bin/rsync` | Allows Jenkins to run the `rsync` command — typically used for syncing files from the Jenkins workspace to your Node.js app directory. |
+| `/bin/systemctl restart your-nodejs-server-service.service` | Allows Jenkins to restart your Node.js service (used for deploying updated code). |
+| `/bin/systemctl status your-nodejs-server-service.service` | Allows Jenkins to check the service status for health monitoring/logging. |
 
-      echo "[my-nodejs-freestyle-CI-CD-job] 🩺 Checking service status..."
-      sudo systemctl status "$SERVICE_NAME" --no-pager || {
-          echo "[my-nodejs-freestyle-CI-CD-job] ⚠️ Service restarted but returned a non-zero status."
-      }
+**Nano Tips**
 
-      echo "[my-nodejs-freestyle-CI-CD-job] ✅ Deployment and service restart complete!"
-    ```
+  - 1. press 'CTRL + o' - save the update
+  - 2. press 'ENTER' - accept the file name prompt
+  - 3. press 'CTRL + x' to exit Nano
 
-    - Click 'Apply', then 'Save'.
+2. Giving the Jenkins user the permission(s) to access our original project folder and perform actions on it. E.g. `npm install`
 
-    _Screenshot needed._
+a. **Add Jenkins to the `ubuntu` group:**
 
-  3. Giving the Jenkins user the necessary permissions to run the necessary processes(i.e. the file syncing process, the server-restart, and the server-status-check) on the CI/CD workflow.
+```bash
+sudo usermod -aG ubuntu jenkins
+```
 
-  Normally, the Jenkins user will not have direct access rights to run system services, so we'll need to update permissions on the host VM to permit the Jenkins to run the necessary system services.
+b. **Set group permissions on the folder:**
 
-    - Switch to the Ubuntu user and run the below command.
+```bash
+sudo chown -R ubuntu:ubuntu /home/ubuntu/your-nodes-project-directory
+sudo chmod -R 775 /home/ubuntu/your-nodes-project-directory
+```
 
-      ```bash
-        sudo visudo -f /etc/sudoers.d/jenkins  
-      ```
-      the command will open nano CLI editor. Add the following to the opened file.
+c. **Reload Jenkins or re-login Jenkins session:**
 
-      ```bash
-        jenkins ALL=(ALL) NOPASSWD: /usr/bin/rsync, /bin/systemctl restart your-nodejs-server-service.service, /bin/systemctl status your-nodejs-server-service.service
-      ```
+```bash
+sudo systemctl restart jenkins
+```
 
-      **Breaking down the above script**
+This way:
 
-        | Part | Meaning |
-        |------|--------|
-        | `jenkins` | The Linux username (the Jenkins service typically runs as this user). |
-        | `ALL=(ALL)` | This means the `jenkins` user can run the specified commands as **any user** on **any host** (standard sudo syntax). |
-        | `NOPASSWD:` | Jenkins **won’t be asked for a password** when executing the commands listed after this. |
-        | `/usr/bin/rsync` | Allows Jenkins to run the `rsync` command — typically used for syncing files from the Jenkins workspace to your Node.js app directory. |
-        | `/bin/systemctl restart Zed-Labs-Platform-Server_PlatformCore01.service` | Allows Jenkins to restart your Node.js service (used for deploying updated code). |
-        | `/bin/systemctl status Zed-Labs-Platform-Server_PlatformCore01.service` | Allows Jenkins to check the service status for health monitoring/logging. |
+✅ Jenkins can access the folder  
+✅ Ubuntu retains ownership  
+✅ More secure for shared environments
 
-      **Nano Tips**
-      
-        - 1. press 'CTRL + o' - save the update
-        - 2. press 'ENTER' - accept the file name prompt
-        - 3. press 'CTRL + X' to exit Nano
+4. Set Up Task Done: Now try building the CI/CD job.
 
-  **In case the Jenkins user is not having access to the original nodeJs project directory, try the following**.
-
-    a. **Add Jenkins to the `ubuntu` group:**
-
-    ```bash
-    sudo usermod -aG ubuntu jenkins
-    ```
-
-    b. **Set group permissions on the folder:**
-
-    ```bash
-    sudo chown -R ubuntu:ubuntu /home/ubuntu/your-nodes-project-directory
-    sudo chmod -R 775 /home/ubuntu/your-nodes-project-directory
-    ```
-
-    c. **Reload Jenkins or re-login Jenkins session:**
-
-    ```bash
-    sudo systemctl restart jenkins
-    ```
-
-    This way:
-
-    ✅ Jenkins can access the folder  
-    ✅ Ubuntu retains ownership  
-    ✅ More secure for shared environments
-
-  4. Set Up Task Done: Now try building the CI/CD job.
-
-**NodeJs(Pipeline Job - with Jenkins File)**
+#### 3.1.2 NodeJs(Pipeline Job - with Jenkins File)
 
 ## Part 6: Optional Improvements
 
@@ -463,5 +472,9 @@ _Workflow diagram needed._
 - Archive artifacts or reports
 - Add environment-specific steps (test/staging/prod)
 - Integrate Slack/Discord for notifications
+
+Todos:
+
+- Screenshot placements and properly finishing the above with correct indentation.
 
 
