@@ -4,7 +4,7 @@
 
 This section details the implementation of a single VM **Jenkins freestyle** CI/CD workflow for a NodeJs project.
 
-> A **Freestyle Jenkins Job** is a job/workflow that is non-declarative. It is a job that works directly using shell scripting and not the declarative or declarative-file method that both uses the Groovy syntax.
+> A **Freestyle Jenkins Job** is a basic type of Jenkins job that does not use the pipeline syntax (declarative or scripted). It allows you to define build steps using a graphical user interface (GUI), typically by adding shell scripts, invoking build tools like Maven or Gradle, and configuring post-build actions. Unlike Pipeline jobs, which use Groovy-based code (either declarative or scripted), Freestyle jobs are configuration-driven and not based on Groovy or code files.
 
 > By single VM, I simply mean, both the NodeJs project server, and the Jenkins server all live on the same VM. This makes the CI/CD(especially the deployment) process very straight-forward, and a lot easier. Perfect for small projects and startups - even though I'll always recommend that each component stay on a separate VM. 
 >

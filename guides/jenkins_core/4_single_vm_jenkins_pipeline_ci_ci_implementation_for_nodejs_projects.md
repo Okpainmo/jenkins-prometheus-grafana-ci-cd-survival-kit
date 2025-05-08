@@ -4,7 +4,7 @@
 
 While the previous guide(Part 3), featured a single VM *Freestyle* CI/CD implementation, this section details the implementation of a single VM **Jenkins Pipeline** CI/CD workflow for a NodeJs project.
 
-> A **Pipeline Jenkins Job** is a job/workflow that is declarative. It is simply a job that works with the declarative Groovy syntax method - and if desired, a project Jenkinsfile.
+> A **Pipeline Jenkins Job** is a job/workflow defined using Groovy-based syntax, allowing for more complex and automated CI/CD workflows. It can be written in either the Declarative Pipeline syntax, which is simpler and more structured, or the Scripted Pipeline syntax, which offers greater flexibility and control. Pipeline jobs can be defined directly in Jenkins or in a Jenkinsfile stored in the project’s source code repository.
 
 > Similarly, By single VM, I simply mean, both the NodeJs project server, and the Jenkins server all live on the same VM. This makes the CI/CD(especially the deployment) process very straight-forward, and a lot easier. Perfect for small projects and startups - even though I'll always recommend that each component stay on a separate VM. 
 >
