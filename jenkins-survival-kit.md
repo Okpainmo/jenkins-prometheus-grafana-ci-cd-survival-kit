@@ -34,173 +34,6 @@ It requires that you:
 
 - Part 6: Optional Improvements(That You Can Contribute).
 
-## Part 1: Installing Jenkins On An AWS EC2 Instance.
-
-This step will guide through the process of installing a new Jenkins server on an AWS EC2 virtual machine.
-
-**P.S:**
-
-1. It is assumed that you already have an AWS EC2 instance created - which is also already running the Python/NodeJs project server. Both the project server, and the Jenkins server will run on the same EC2 instance.
-
-1. Ensure to keep the VM port 8080 open. Jenkins runs by default on port 8080. Keeping everything behind a reverse proxy, will also be very beneficial
-
-### 1.1. Update the system.
-
-```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-_Screenshot needed._
-
-### 1.2. Install Java.
-
-**Install Java Version 21(a Jenkins requirement) - Ensure to only install version 21 or higher. As at 24/04/2025, version 11 would not work with Jenkins. It has also been announced that Jenkins is already coming to an end of support for version 17.**
-
-```bash
-sudo apt install openjdk-21-jre -y # make the installation
-
-java -version # verify the installation
-```
-
-_Screenshot needed._
-
-### 1.3 Add Jenkins repo and install(proper)
-
- <!-- https://www.jenkins.io/doc/book/installing/linux/#debianubuntu -->
-
-**Using the Jenkins 'Weekly Release' Installation**
-
-```bash
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
-  https://pkg.jenkins.io/debian/jenkins.io-2023.key
-echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
-  https://pkg.jenkins.io/debian binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt-get update
-sudo apt-get install jenkins
-```
-
-_Screenshot needed._
-
-### 1.4 Jenkins system chores - check Jenkins status, and restart if needed.
-
-```bash
-sudo systemctl status jenkins
-# sudo systemctl start jenkins
-sudo systemctl restart jenkins
-# sudo systemctl stop jenkins
-```
-
-_Screenshot needed._
-
-### 1.5 View the Jenkins logs - in case you need to troubleshoot.
-
-```bash
-sudo journalctl -u jenkins.service
-```
-
-_Screenshot needed._
-
-### 1.6 Changing the Jenkins port.
-
-**If Jenkins fails to start because a port is in use, run `systemctl edit jenkins` and add the following:**
-
-```bash
-[Service]
-Environment="JENKINS_PORT=8081"
-```
-
-Here, "8081" was chosen but you can put another port available.
-
-_Screenshot needed - show the above(port change) section as shown on this page - https://www.jenkins.io/doc/book/installing/linux/#debianubuntu_
-
-### 1.7 Access Jenkins UI and perform necessary setups.
-
-- Go to `http://<your-EC2-Public-IP>:8080`
-
-_Screenshot needed._
-
-- Get initial Jenkins password:
-
-```bash
-sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-```
-
-_Screenshot needed._
-
-- Log-in.
-
-- Finish setup wizard and install **suggested plugins**.
-
-_Screenshot needed - show the option to select._
-
-_Screenshot needed - show plugins installation in progress._
-
-- Create **admin user**
-
-_Screenshot needed._
-
-## Part 2: Setting Up, And Connecting Jenkins With Github(Configuring Github Access).
-
-All through this part(part 2), ensure to switch to the Jenkins user(on the EC2 VM).
-
-```bash
-sudo su - jenkins
-```
-
-_Screenshot needed._
-
-### 2.1 Generate SSH key(on EC2).
-
-Ensure to copy and save both the public and private key.
-
-```bash
-ssh-keygen -t rsa -b 4096 -C "jenkins@ci" -f ~/.ssh/id_rsa # creates the keys, abd reveals the private key - copy and save it.
-```
-
-_Screenshot needed._
-
-```bash
-cat ~/.ssh/id_rsa # reveals the private key - never reveal or share this - no need to copy it. You can always view it with this command.
-```
-
-_Screenshot needed._
-
-
-```bash
-cat ~/.ssh/id_rsa.pub # reveals the public key - copy and save it.
-```
-
-_Screenshot needed._
-
-### 2.2 Add public key to GitHub repo
-
-- Go to your GitHub repo → **Settings → Deploy keys**
-
-> Ensure that the option to add 'Deploy Keys' is enabled/supported for your Github organization.
-
-_Screenshot needed - show how to enable public keys on Github repos._
-
-- Add the public key
-- Check **Allow write access** if needed.
-
-My recommendation: leave it unchecked - as an extra layer of safety for you repo.
-
-_Screenshot needed - show how to add the public key - hence properly creating the new deploy key._
-
-### 2.3 Test GitHub access on the EC2 VM(as `jenkins`)
-
-```bash
-sudo su - jenkins # you should have done this by now - as required at the beginning of part 2.
-```
-
-```bash
-ssh -T git@github.com
-
-# if the configuration is well implemented, this should return a response showing some details of the connected repo.
-```
-
-_Screenshot needed._
 
 ## Part 3: Implementing Single VM CI/CD Workflows
 
@@ -213,6 +46,31 @@ _Workflow diagram needed._
 > Similarly as required, the server(NodeJs or Python) should already be deployed on the AWS EC2 instance - using systemd for service management and persistence.
 
 > For better understanding of the CI/CD workflow, kindly study the workflow diagram above.
+
+> **P.S: Consider the below on Access the Jenkins workspace/filesystem**
+
+```bash
+# view the Jenkins file system local docker
+
+cd /var/jenkins_home # access the volume holding the files
+
+ls -ltr # list the files
+
+cd workspace # access the Jenkins workspace, and see the files right from within docker.
+```
+
+**If in EC2 directly, the file system will be here**
+
+```bash
+cd /var/lib/jenkins
+```
+
+**If in on windows OS, the file system will be here(ensure to only use powershell, also ensure to run powershell as administrator - this is very important)**
+
+```shell
+cd C:\Users\Jenkins\AppData\Local\Jenkins\.jenkins\
+```
+
 
 ### 3.1. Freestyle Implementation and Pipeline Implementation(For NodeJs Project).
 
@@ -228,9 +86,9 @@ _Screenshot needed._
 
 - Name: `your-project-job-name`
 
-- Type: select `Freestyle project`
+- Project Type: select `Freestyle project`
 
-- Ensure to check Github project, then add the github repo URl - but in SSH format.
+- Ensure to check Github project, then add the github repo URl - **but in SSH format**.
 
 _Screenshot needed - for the aspects covered so far._
 
@@ -238,7 +96,7 @@ _Screenshot needed - for the aspects covered so far._
 >
 > **`git@github.com:your-username/repo-name.git`** or **`git@github.com:your-github-org-name/repo-name.git`**. If you use the 'https' format(e.g: `https://github.com/your-github-org-name/repo-name`), your job will get stuck during https authentication step, as the Jenkins job, will request for authentication during the shell process.
 
-- Source Code Management.
+- Source Code Management(SCM).
 
   - Select **Git**
 
@@ -450,6 +308,11 @@ sudo chown -R ubuntu:ubuntu /home/ubuntu/your-nodes-project-directory
 sudo chmod -R 775 /home/ubuntu/your-nodes-project-directory
 ```
 
+```bash
+sudo chown -R ubuntu:ubuntu /home/ubuntu/zed-labs-platform-server
+sudo chmod -R 775 /home/ubuntu/zed-labs-platform-server
+```
+
 c. **Reload Jenkins or re-login Jenkins session:**
 
 ```bash
@@ -464,7 +327,65 @@ This way:
 
 4. Set Up Task Done: Now try building the CI/CD job.
 
-#### 3.1.2 NodeJs(Pipeline Job - with Jenkins File)
+#### 3.1.2 NodeJs(Pipeline Job - with Jenkins File).
+
+##### 3.1.2.1 Ensure all necessary plug-ins(Git, Docker, and NodeJs) are Installed.
+
+Same as section 3.1.1.1.
+
+##### 3.1.1.2. Create a New Freestyle Job.
+
+- Create a temporary process directory for Jenkins.
+
+When using Jenkins pipeline deployments, the shell processes differ from when it's a direct freestyle shell.
+
+In short, Jenkins will attempt to create a duplicate of your project folder - but with an "@tmp" suffix.
+
+Hence. if your project directory is "my-node-server", on the same root as your server, create another directory called "my-node-server@tmp", then grant Jenkins the necessary access to perform it's chores.
+
+1. Switch to the ubuntu user if you're not there already.
+
+```bash
+sudo -su ubuntu
+```
+2. Create the @tmp directory.
+
+```bash
+mkdir my-node-server@tmp
+```
+3. Give necessary permissions.
+
+```bash
+sudo chown -R ubuntu:ubuntu /home/ubuntu/my-node-server@tmp
+sudo chmod -R 775 /home/ubuntu/my-node-server@tmp
+```
+
+- Name: `your-project-job-name`
+
+- Project Type: select `Freestyle project`
+
+- Ensure to check Github project, then add the github repo URl - **but in SSH format**.
+
+_Screenshot needed - for the aspects covered so far._
+
+> IMPORTANT: While adding your Github URL during the jenkins job/project creation, ensure to use SSH format. E.g:
+>
+> **`git@github.com:your-username/repo-name.git`** or **`git@github.com:your-github-org-name/repo-name.git`**. If you use the 'https' format(e.g: `https://github.com/your-github-org-name/repo-name`), your job will get stuck during https authentication step, as the Jenkins job, will request for authentication during the shell process.
+
+- Pipeline.
+
+  - Definition: Select "Pipeline script from SCM"
+
+  > We'll use the other(direct) "Pipeline script" option for ONLY the single-VM docker agent Jenkins job of the NodeJs sectioN - for demonstration purpose. All other pipeline jobs will use the "Pipeline script from SCM" option.  
+
+  > SCM => Source Code Management
+
+    - SCM: Select Git
+
+      > For everything in this section, refer and implement same as the Source Code Management(SCM) section of **section 3.1.1.2.**
+
+
+
 
 ## Part 6: Optional Improvements
 
@@ -472,9 +393,8 @@ This way:
 - Archive artifacts or reports
 - Add environment-specific steps (test/staging/prod)
 - Integrate Slack/Discord for notifications
-
-Todos:
-
-- Screenshot placements and properly finishing the above with correct indentation.
+- Add environment variables using **Credentials > Environment Injector Plugin**
+- Use `.env` files securely with `dotenv`- VERIFY WHAT THIS MEAN - DOES IT RELATE TO JENKINS?.
+- Add Slack notifications or GitHub status checks
 
 
