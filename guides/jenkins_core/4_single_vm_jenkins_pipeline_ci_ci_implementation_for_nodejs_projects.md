@@ -1,6 +1,6 @@
 # Part 4: Implementing Single VM *pipeline* CI/CD Workflows For NodeJs Projects.
 
-**P.S: Once again, if you know what you're doing, and already have things set up, then feel free to proceed, Else stop right here and explore part 1(on installing Jenkins) and part 2(on configuring SSH communication between the Jenkins server and Github) in the 'jenkins_core' section of this repository, before proceeding with this section**.
+**P.S: If you know what you're doing, and already have things set up, then feel free to proceed. Else please stop here, and explore part 1(on installing Jenkins on an EC2 machine) and part 2(on configuring SSH communication between the Jenkins server and Github). You will find all of those in the 'jenkins_core' section of this repository**.
 
 While the previous guide(Part 3), featured a single VM *Freestyle* CI/CD implementation, this section details the implementation of a single VM **Jenkins Pipeline** CI/CD workflow for a NodeJs project.
 
@@ -8,7 +8,7 @@ While the previous guide(Part 3), featured a single VM *Freestyle* CI/CD impleme
 
 > Similarly, By single VM, I simply mean, both the NodeJs project server, and the Jenkins server all live on the same VM. This makes the CI/CD(especially the deployment) process very straight-forward, and a lot easier. Perfect for small projects and startups - even though I'll always recommend that each component stay on a separate VM. 
 >
-> Just as stated in the previous part - It works perfectly anyway. Simply ensure that the EC2 VM is of a considerable specs - good/high RAM and CPU. A free-tier EC2 VM is certainly not recommended for such a combination. 
+> Just as stated in the previous part(Part 3) - things will work fine anyhow. Simply ensure that the EC2 VM is of considerable specs, with good/high RAM and CPU. A free-tier EC2 VM is certainly not recommended for such a combination. Also, always put it in mind that with such a set up, distributed(node or agentic) jenkins builds, might become a necessity in a very short while.
 
 ## Bonus Tips: Consider the below on accessing the Jenkins file-system/workspace.
 

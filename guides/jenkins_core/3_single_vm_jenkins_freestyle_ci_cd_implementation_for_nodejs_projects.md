@@ -1,6 +1,6 @@
 # Part 3: Implementing Single VM *freestyle* CI/CD Workflows For NodeJs Projects.
 
-**P.S: if you know what you're doing, and already have things set up, then feel free to proceed, Else stop right here and explore part 1(on installing Jenkins) and part 2(on configuring SSH communication between the Jenkins server and Github) in the 'jenkins_core' section of this repository, before proceeding with this section**.
+**P.S: If you know what you're doing, and already have things set up, then feel free to proceed. Else please stop here, and explore part 1(on installing Jenkins on an EC2 machine) and part 2(on configuring SSH communication between the Jenkins server and Github). You will find all of those in the 'jenkins_core' section of this repository**.
 
 This section details the implementation of a single VM **Jenkins freestyle** CI/CD workflow for a NodeJs project.
 
@@ -8,7 +8,7 @@ This section details the implementation of a single VM **Jenkins freestyle** CI/
 
 > By single VM, I simply mean, both the NodeJs project server, and the Jenkins server all live on the same VM. This makes the CI/CD(especially the deployment) process very straight-forward, and a lot easier. Perfect for small projects and startups - even though I'll always recommend that each component stay on a separate VM. 
 >
-> It works perfectly anyway. Simply ensure that the EC2 VM is of a considerable spec - good/high RAM and CPU. A free-tier EC2 VM is certainly not recommended for such a combination. 
+> Things will work great anyway. Just ensure that the EC2 VM is of a considerable spec, with good/high RAM and CPU. A free-tier EC2 VM is certainly not recommended for such a combination. Also, always put it in mind that with such a set up, distributed(node or agentic) jenkins builds, might become a necessity in a very short while.
 
 ## Workflow Diagram.
 
