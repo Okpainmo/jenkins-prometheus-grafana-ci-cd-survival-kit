@@ -59,7 +59,7 @@ sudo su - ubuntu
 mkdir my-node-server@tmp
 ```
 
-3. Add the 'jenkins' to the `ubuntu` group.
+3. Add the 'jenkins' user to the `ubuntu` group.
 
 ```bash
 sudo usermod -aG ubuntu jenkins
@@ -77,7 +77,7 @@ II. **Name: `your-project-job-name`**
 
 III. **Project Type: select `Pipeline`**
 
-IV. Description:
+IV. **Description:**
 
   - Add a be-fitting text description for your project.
 
@@ -101,7 +101,7 @@ V. **Triggers**.
 
   1. Poll SCM: this creates(more like) a cron job, and polls to Github at whichever interval you set. If a change is detected on the repo, the Jenkins job workflow will be automatically triggered and the CI/CD process will kick in. If no change is detected, no action will be taken.
 
-  > **P.S: We can set this up directly in our Groovy script without doing it manually on the Jenkins UI. The Jenkins server will pick it up, and update on the UI - on our behalf. That will(at least) be a good test to verify that your Groovy script is being referenced.**
+  > **P.S: We can set this up directly in our Groovy script(as shown below), without doing it manually on the Jenkins UI. The Jenkins server will pick it up, and update on the UI - on our behalf. That will(at least) be a good test to verify that your Groovy script is being referenced.**
 
   ```groovy
     pipeline {
@@ -131,7 +131,7 @@ V. **Triggers**.
 
   _Screenshot needed - for the aspects covered so far._
 
-  > P.S: Study more above the polling schedule syntax system, and learn more about it's power and impressive flexibility.
+  > P.S: Study more about the polling schedule scripting, and learn more about it's power and impressive flexibility/extendability.
 
   2. GitHub hook trigger for GITScm polling.
 
@@ -172,7 +172,7 @@ V. **Triggers**.
 
     - SCM: Select Git
 
-      > For everything in this section, refer and implement same as the Source Code Management(SCM) section of **Part 3.2.** inside the 'jenkins-core' folder of the repository
+      > For everything in this section, refer and implement as needed - the same way as the Source Code Management(SCM) section of **Part 3.2.**. You'll find the Part 3 guide inside the 'jenkins-core' folder of the repository
 
     - Script Path
 
@@ -190,9 +190,9 @@ V. **Triggers**.
         agent any
 
         environment {
-            TEMP_DIR = "/home/ubuntu/zed-labs-platform-server@tmp"
+            TEMP_DIR = "/home/ubuntu/my-node-server@tmp"
             LIVE_APP_DIR = "/home/ubuntu/zed-labs-platform-server"
-            SERVICE_NAME = "Zed-Labs-Platform-Server_PlatformCore01.service"
+            SERVICE_NAME = "your-nodejs-server-service.service"
             NVM_DIR = "/home/ubuntu/.nvm"
             NODE_VERSION = "v22.12.0"
         }
