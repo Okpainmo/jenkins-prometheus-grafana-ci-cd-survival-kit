@@ -15,7 +15,6 @@ While the previous guide(Part 3), featured a single VM *Freestyle* CI/CD impleme
 1. **Docker**
 
 ```bash
-# view the Jenkins file system local docker
 cd /var/jenkins_home 
 
 ls -ltr # list the files

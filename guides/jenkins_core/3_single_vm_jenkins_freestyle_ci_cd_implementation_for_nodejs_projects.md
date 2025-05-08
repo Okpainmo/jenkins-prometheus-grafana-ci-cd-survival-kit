@@ -23,7 +23,6 @@ _Workflow diagram needed._
 1. **Docker**
 
 ```bash
-# view the Jenkins file system local docker
 cd /var/jenkins_home 
 
 ls -ltr # list the files
