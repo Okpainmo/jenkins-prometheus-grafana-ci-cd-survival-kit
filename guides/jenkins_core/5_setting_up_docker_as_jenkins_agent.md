@@ -34,7 +34,7 @@ ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock
 
 > The above, (kind of) hacks docker on the current(agent) VM, and grants access(via TCP) to a remote Jenkins controller, which can then connect and control the docker service/daemon REMOTELY - thus giving the Jenkins controller the ability to use it as an agent.
 
-### 2. Reload and restart Docker
+### 2. Reload and restart Docker.
 
 ```bash
 sudo systemctl daemon-reexec
@@ -57,11 +57,11 @@ Allowing port 2375 access only from `198.51.100.10`:
 
 ### 4. On the Jenkins controller UI:
 
-1. go to **Jenkins → Manage Jenkins → Clouds → Add a cloud**
+#### 1. go to **Jenkins → Manage Jenkins → Clouds → Add a cloud**
 
-2. **Select Docker(Options are AWS EC2, Kubernetes, Docker, and 'Copy Existing Cloud' - i.e. if you already created one) then give the cloud agent a name and proceed**.
+#### 2. **Select Docker(Options are AWS EC2, Kubernetes, Docker, and 'Copy Existing Cloud' - i.e. if you already created one) then give the cloud agent a name and proceed**.
 
-3. **On the "Docker Cloud details" drop-down/menu**.
+#### 3. **On the "Docker Cloud details" drop-down/menu**.
 
 > In this part, you're basically connecting the exposed docker daemon/service of your proposed Jenkins client VM to the controller. That way, the remote Jenkins controller is able to delegate jobs/tasks to it - controlling it's docker daemon/service remotely.
 
@@ -83,7 +83,7 @@ Allowing port 2375 access only from `198.51.100.10`:
 
     - Tick 'Enabled', and save.
 
-4. **On "Docker Agent templates" drop-down/menu**
+#### 4. **On "Docker Agent templates" drop-down/menu**
 
 > In this part, you're basically setting up how your Docker agent will work. You're specifying the type of image that would be run, and other key details. Docker cloud agents are powerful. The flexibility that they bring to Jenkins, are simply mind-blowing.
 
