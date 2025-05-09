@@ -6,7 +6,17 @@ This guide details out - in very thorough fashion, how to install Jenkins on an 
 
 1. It is assumed that you already have an AWS EC2 instance created.
 
-2. Ensure to keep the VM port 8080 open. Jenkins runs by default on port 8080. Keeping everything behind a reverse proxy, plus adding an SSL certified domain or sub-domain(e.g. 'jenkins.mydomain.com'), will also be very beneficial. With that, you get to keep your VM safe - with no need to open the 8080 port. Feel free to refer to my [EC2 Nginx guide](https://github.com/Okpainmo/aws-cloud-survival-kit/blob/main/tutorials/ec2_nginx-management.md). for handling all of that
+2. Ensure to keep the VM port 8080 open. Jenkins runs by default on port 8080. Keeping everything behind a reverse proxy(e.g. Nginx), plus adding an SSL certified domain or sub-domain(e.g. 'jenkins.mydomain.com'), will also be very beneficial. With that, you get to keep your VM safe - with no need to open the 8080 port. Feel free to refer to my [EC2 Nginx guide](https://github.com/Okpainmo/aws-cloud-survival-kit/blob/main/tutorials/ec2_nginx-management.md). for handling all of that. 
+
+> One very important thing I also recommend, is that you should always ensure to restrict open ports to the IP of the VM that would be accessing them. Never keep VM ports open to all connections.
+
+- Example Use Case
+
+Allowing port 8080 access only from `198.51.100.10`:
+
+* **Type:** Custom TCP
+* **Port Range:** 8080
+* **Source:** Change from `0.0.0.0/0` to `198.51.100.10/32` - Custom TCP(IPV4)
 
 ## 1.1. Update the system.
 
