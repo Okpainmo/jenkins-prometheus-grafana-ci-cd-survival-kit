@@ -44,7 +44,7 @@ For this guide, we'll need 3 EC2 VMs.
 
 1. So proceed to create three EC2 virtual machines(one for the Jenkins controller, one for Prometheus, and one for Grafana). I recommend that each stays on a separate VM.
 
-2. Install docker on the Prometheus and Grafana VMs(refer to my other(free) github [guide on installing Docker on AWS EC2 machines](https://github.com/Okpainmo/aws-cloud-survival-kit/blob/main/tutorials/ec2_docker-management.md)).
+2. Install docker on the Prometheus and Grafana VMs(refer to my other(free) github [guide on installing Docker on AWS EC2 machines](https://github.com/Okpainmo/aws-cloud-survival-kit/blob/main/tutorials/ec2_docker-installation.md)).
 
 3. Optional: Install Nginx, then use it to get an SSl certificate for domains/sub-domains(e.g. jenkins.mydomain.com, prometheus.mydomain.com and grafana.mydomain.com). With that in place, you're able to handle reverse-proxying, and directing to your domains/sub-domains while avoiding to open any extra port - hence keeping your VM as safe as possible. Also refer to my free [EC2 Nginx guide](https://github.com/Okpainmo/aws-cloud-survival-kit/blob/main/tutorials/ec2_nginx-management.md) for handling all of that.
 
