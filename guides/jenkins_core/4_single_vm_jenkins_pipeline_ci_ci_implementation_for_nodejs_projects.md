@@ -46,7 +46,7 @@ When using Jenkins pipeline deployments, the shell processes differ from when it
 
 In short, for a Jenkins pipeline workflow, Jenkins will attempt to create a duplicate of your project folder - but with an "@tmp" suffix.
 
-Hence. if your project directory is "my-node-server", on the same root as your server, create another directory called "my-node-server@tmp", then grant Jenkins the necessary access to perform it's chores.
+Hence. if your project directory is "my-node-server", on the same root as your project directory, create another directory called "my-node-server@tmp", then grant Jenkins the necessary access to perform it's chores.
 
 1. Switch to the ubuntu user if you're not there already.
 
