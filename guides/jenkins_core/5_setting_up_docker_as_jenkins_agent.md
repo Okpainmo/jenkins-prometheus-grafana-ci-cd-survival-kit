@@ -14,7 +14,7 @@ Refer to my free github [guide on installing Docker on AWS EC2 machines](https:/
 
 **The next couple of steps are very sensitive in nature, and as such, it is important that you only do this in a controlled environments. E.g. within a private network, or behind a proxy server like Nginx. A very viable option, is to restrict IP access(of any opened agent VM port) to only the IP of the VM running the Jenkins controller**.
 
-1. **Edit Docker service file on EC2**:
+### Edit Docker service file on EC2.
 
 ```bash
 sudo nano /lib/systemd/system/docker.service
@@ -34,7 +34,7 @@ ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock
 
 > The above, (kind of) hacks docker on the current(agent) VM, and grants access(via TCP) to a remote Jenkins controller, which can then connect and control the docker service/daemon REMOTELY - thus giving the Jenkins controller the ability to use it as an agent.
 
-2. **Reload and restart Docker**:
+### Reload and restart Docker
 
 ```bash
 sudo systemctl daemon-reexec
@@ -43,7 +43,7 @@ sudo systemctl restart docker
 sudo systemctl status docker
 ```
 
-3. **Open port 2375 in your agent EC2 instance security group and grant access to ONLY the Jenkins master/controller VM IP address**. 
+### Open port 2375 in your agent EC2 instance security group and grant access to ONLY the Jenkins master/controller VM IP address.
 
 Example Use Case:
 
@@ -55,11 +55,11 @@ Allowing port 2375 access only from `198.51.100.10`:
 
 > Do well to add TLS(Transport Layer Security) and switch to the more secure port '2376' for docker - while still restricting access to only the Jenkins controller VM IP address.
 
-4. On the Jenkins controller UI, go to **Jenkins → Manage Jenkins → Clouds → Add a cloud**
+### On the Jenkins controller UI, go to **Jenkins → Manage Jenkins → Clouds → Add a cloud**
 
 5. Select Docker(Options are AWS EC2, Kubernetes, Docker, and 'Copy Existing Cloud' - i.e. if you already created one) then give the cloud agent a name and proceed.
 
-6. **On the "Docker Cloud details" drop-down/menu**
+### On the "Docker Cloud details" drop-down/menu.
 
 > In this part, you're basically connecting the exposed docker daemon/service of your proposed Jenkins client VM to the controller. That way, the remote Jenkins controller is able to delegate jobs/tasks to it - controlling it's docker daemon/service remotely.
 
