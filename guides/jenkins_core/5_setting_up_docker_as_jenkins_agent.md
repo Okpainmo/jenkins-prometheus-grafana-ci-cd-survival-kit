@@ -65,67 +65,67 @@ Allowing port 2375 access only from `198.51.100.10`:
 
 > In this part, you're basically connecting the exposed docker daemon/service of your proposed Jenkins client VM to the controller. That way, the remote Jenkins controller is able to delegate jobs/tasks to it - controlling it's docker daemon/service remotely.
 
-    - Docker Host URI
+- Docker Host URI
 
-        - Add 
+Add 
 
-        ```bash
-        tcp://ip_of_jenkins_agent_vm:2375
-        ```
+```bash
+tcp://ip_of_jenkins_agent_vm:2375
+```
 
-    - Test the connection.
+- Test the connection.
 
-        - should return a response like below:
+should return a response like below:
 
-        ```bash
-        Version = 28.1.1, API Version = 1.49
-        ```
+```bash
+Version = 28.1.1, API Version = 1.49
+```
 
-    - Tick 'Enabled', and save.
+- Tick 'Enabled', and save.
 
 #### 4. **On "Docker Agent templates" drop-down/menu**
 
 > In this part, you're basically setting up how your Docker agent will work. You're specifying the type of image that would be run, and other key details. Docker cloud agents are powerful. The flexibility that they bring to Jenkins, are simply mind-blowing.
 
-    - Add a label(identifier) for the docker agent template.
-    - Tick 'Enabled'.
-    - Add a name - usually same as label above.
-    - Add the docker image to use on the agent(the beauty of Docker as a Jenkins agent - flexibility of environments, and parallelism). 
+- Add a label(identifier) for the docker agent template.
+- Tick 'Enabled'.
+- Add a name - usually same as label above.
+- Add the docker image to use on the agent(the beauty of Docker as a Jenkins agent - flexibility of environments, and parallelism). 
 
-    E.g.
+E.g.
 
-    ```bash
-    okpainmo/jenkins_nodejs_agent_linux_deb:6.5.25
-    ```
+```bash
+okpainmo/jenkins_nodejs_agent_linux_deb:6.5.25
+```
 
-    - Set instance capacity - the number of containers the agent is allowed to spin(3 - 5 should be good I guess).
-    - Remote File System Root.
+- Set instance capacity - the number of containers the agent is allowed to spin(3 - 5 should be good I guess).
+- Remote File System Root.
 
-    ```bash
-    /var/jenkins_home 
-    ```
+```bash
+/var/jenkins_home 
+```
 
-    - Study(click the '?' marks on the Jenkins UI) other options and make appropriate choices - especially for "Idle timeout" and "Stop timeout".
-    - Apply and Save.
-    - Then use in your declarative pipeline scripts.
+- Study(click the '?' marks on the Jenkins UI) other options and make appropriate choices - especially for "Idle timeout" and "Stop timeout".
+- Apply and Save.
+- Then use in your declarative pipeline scripts.
 
-    ```groovy
-    pipeline {
-        agent {
-            docker {
-                label 'agent_name'// e.g. 'my_docker-agent'
-            }
+```groovy
+pipeline {
+    agent {
+        docker {
+            label 'agent_name'// e.g. 'my_docker-agent'
         }
+    }
 
-        stages {    
-            stage('Build') {
-                steps {
-                    sh 'whoami'                   
-                }
+    stages {    
+        stage('Build') {
+            steps {
+                sh 'whoami'                   
             }
         }
     }
-    ```
+}
+```
 
 **Study on the differences between, and the pros/cons of using Docker as a Jenkins CLOUD agent, and using a Jenkins NODE(SSH) agent.**
 
