@@ -59,7 +59,7 @@ sudo su - jenkins # you should have done this by now - as required at the beginn
 ```
 
 ```bash
-ssh -i ~/.ssh/my_custom_key git@github.com
+ssh -i ~/.ssh/id_rsa_jenkins_controller git@github.com
 
 # if the configuration is well implemented, this should return a response showing some details of the connected repo.
 ```
