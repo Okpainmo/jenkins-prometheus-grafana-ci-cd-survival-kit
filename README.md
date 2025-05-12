@@ -54,11 +54,9 @@ This project contains multiple CI/CD workflow implementations, that can be basic
     - Jenkins Pipeline Job - using the Jenkins pipeline GUI option(Pipeline script).
     - Jenkins Pipeline job - using a project Jenkins file(Pipeline script from SCM).
 
-This project assumes that you already know some solid amount of cloud and DevOps implementations.
+In terms of knowledge requirements, this project assumes that you.
 
-It requires that you:
-
-1. Have solid knowledge of some cloud and DevOps concepts and processes.
+1. Have considerable knowledge of some cloud and DevOps concepts and processes.
 
 2. Already know how to deploy a server(NodeJs, Python, and more) on an AWS EC2 instance - using systemd for server management and persistence.
 
