@@ -8,7 +8,7 @@ As can already be inferred, the goal of this guide, is to track the performance 
 
 You will learn completely and perfectly how to implement the above as stated, while also getting solid hands-on experience to help with implementing telemetry pipelines on any running system service(e.g. databases and servers) using Prometheus and Grafana.
 
-> P.S: A more complete telemetry for Jenkins will be a setup like:
+> P.S: A more complete telemetry pipeline for Jenkins will be a setup like:
 >
 > 1. Metrics: Prometheus
 >
