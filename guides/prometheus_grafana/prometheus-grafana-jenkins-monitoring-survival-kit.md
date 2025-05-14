@@ -70,6 +70,8 @@ docker pull prom/prometheus
 sudo vim /home/ubuntu/prometheus-config.yml
 ```
 
+or
+
 ```bash
 sudo nano /home/ubuntu/prometheus-config.yml
 ```
@@ -302,7 +304,7 @@ scrape_configs:
 
 We have the above part, that reveals our prometheus connection to the Jenkins controller.
 
-> The above config tells us that our prometheus tracking data for the Jenkins VM is on the `/prometheus/` path. Hence, accessing the below address, should reveal a stream of data that that verifies that our tracking is already in progress.
+> The above config tells us that our prometheus data-tracking for the Jenkins VM is on the `/prometheus/` path. Hence, accessing the below address, should reveal a stream of data that that verifies that our tracking is already in progress.
 
 ```bash
   http://jenkins-vm-public-ip:8080/prometheus/ # always ensure to add the trailing slash
