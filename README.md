@@ -3,7 +3,7 @@
 > P.S: Life is already hard, tedious, and tasking enough as a startup CTO(who tirelessly leads work across the whole product development lifecycle - from ideation and design till deployments and DevOps), what's the point of stressing further. I did this - mainly to streamline and ease the repetitive task of creating multiple CI/CD pipelines on different projects. **I gave special attention into making this as convenient(and robust) as possible for myself. Feel free to bet your life on it.**
 
 This repository is a survival kit for implementing CI/CD pipelines on different projects with Jenkins - Plus Prometheus and Grafana 
-for Jenkins logging and monitoring. Starting with guides for implementations on Python and NodeJs project, I hope to proceed with 
+for Jenkins data visualization and monitoring. Starting with guides for implementations on Python and NodeJs project, I hope to proceed with 
 implementations for other stacks that I'll work on e.g. The Rust/Axum stack.
 
 The project is **meticulously** packed with all the commands, and PRACTICAL progressive steps required to fully implement robust CI/CD pipelines.
