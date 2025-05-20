@@ -16,24 +16,6 @@ You will learn completely and perfectly how to implement the above as stated, wh
 >
 > 3. Traces: Tempo(Grafana), Jaeger, or OpenTelemetry Collector
 
-## Resources.
-
-1a. CloudBeesTV Youtube Tutorial(How to Monitor Jenkins With Grafana and Prometheus): https://www.youtube.com/watch?v=3H9eNIf9KZs
-
-1b. Tutorial gist file: https://gist.github.com/darinpope/1c8422fb7512411760ccb2827d82613f
-
-2. Prometheus Docker image: https://hub.docker.com/r/prom/prometheus
-
-3. Grafana Docker image: https://hub.docker.com/r/grafana/grafana
-
-4. Setting up Jenkins on AWS EC2: https://github.com/Okpainmo/jenkins-prometheus-grafana-ci-cd-survival-kit/blob/main/guides/jenkins_core/1_installing_jenkins_on_aws_ec2.md
-
-5. Jenkins Plug-ins to install:
-
-  - Prometheus Metrics: https://plugins.jenkins.io/prometheus/
-
-  - CloudBees Disk Usage Simple: https://plugins.jenkins.io/cloudbees-disk-usage-simple/
-
 ## Create Host EC2 Virtual Machines(VMs) And Make Relevant Installations.
 
 For this guide, we'll need 3 EC2 VMs.
@@ -388,4 +370,21 @@ http://grafana-vm-ip/3000
 
 > **There you have it - a complete setup for tracking your Jenkins CI/CD controller with Prometheus and Grafana**.
 
+## Resources.
+
+1a. CloudBeesTV Youtube Tutorial(How to Monitor Jenkins With Grafana and Prometheus): https://www.youtube.com/watch?v=3H9eNIf9KZs
+
+1b. Tutorial gist file: https://gist.github.com/darinpope/1c8422fb7512411760ccb2827d82613f
+
+2. Prometheus Docker image: https://hub.docker.com/r/prom/prometheus
+
+3. Grafana Docker image: https://hub.docker.com/r/grafana/grafana
+
+4. Setting up Jenkins on AWS EC2: https://github.com/Okpainmo/jenkins-prometheus-grafana-ci-cd-survival-kit/blob/main/guides/jenkins_core/1_installing_jenkins_on_aws_ec2.md
+
+5. Jenkins Plug-ins to install:
+
+  - Prometheus Metrics: https://plugins.jenkins.io/prometheus/
+
+  - CloudBees Disk Usage Simple: https://plugins.jenkins.io/cloudbees-disk-usage-simple/
 
